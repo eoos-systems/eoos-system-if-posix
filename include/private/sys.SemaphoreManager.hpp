@@ -1,7 +1,7 @@
 /**
  * @file      sys.SemaphoreManager.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2023, Sergey Baigudin, Baigudin Software
+ * @copyright 2023-2026, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_SEMAPHOREMANAGER_HPP_
 #define SYS_SEMAPHOREMANAGER_HPP_
@@ -10,7 +10,7 @@
 #include "api.SemaphoreManager.hpp"
 #include "sys.Semaphore.hpp"
 #include "sys.Mutex.hpp"
-#include "lib.ResourceMemory.hpp"
+#include "lib.MemoryPool.hpp"
 
 namespace eoos
 {
@@ -61,12 +61,12 @@ public:
      *
      * @param ptr Address of allocated memory block or a null pointer.
      */
-    static void free(void* ptr);        
+    static void free(void* ptr);
 
 protected:
 
     using Parent::setConstructed;
-    
+
 private:
 
     /**
@@ -88,7 +88,7 @@ private:
      * @brief Initializes the allocator.
      */
     static void deinitialize();
-    
+
     /**
      * @struct ResourcePool
      * @brief Resource memory pool.
@@ -97,27 +97,27 @@ private:
     {
 
     public:
-        
+
         /**
          * @brief Constructor.
          */
         ResourcePool();
 
     private:
-            
+
         /**
          * @brief Mutex resource.
-         */    
+         */
         Mutex<NoAllocator> mutex_;
-        
+
     public:
-        
+
         /**
          * @brief Semaphore memory allocator.
-         */     
-        lib::ResourceMemory<Resource, EOOS_GLOBAL_SYS_NUMBER_OF_SEMAPHORES> memory;
+         */
+        lib::MemoryPool<Resource,EOOS_GLOBAL_SYS_SEMAPHORE_AMOUNT> memory;
 
-    };    
+    };
 
     /**
      * @brief Heap for resource allocation.
@@ -128,7 +128,7 @@ private:
      * @brief Resource memory pool.
      */
     ResourcePool pool_;
-    
+
 };
 
 } // namespace sys

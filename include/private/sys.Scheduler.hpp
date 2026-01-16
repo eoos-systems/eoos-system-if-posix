@@ -1,7 +1,7 @@
 /**
  * @file      sys.Scheduler.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017-2023, Sergey Baigudin, Baigudin Software
+ * @copyright 2017-2026, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_SCHEDULER_HPP_
 #define SYS_SCHEDULER_HPP_
@@ -10,7 +10,7 @@
 #include "api.Scheduler.hpp"
 #include "sys.Thread.hpp"
 #include "sys.Mutex.hpp"
-#include "lib.ResourceMemory.hpp"
+#include "lib.MemoryPool.hpp"
 
 namespace eoos
 {
@@ -24,7 +24,7 @@ namespace sys
 class Scheduler : public NonCopyable<NoAllocator>, public api::Scheduler
 {
     typedef NonCopyable<NoAllocator> Parent;
-    typedef Thread<Scheduler> Resource;    
+    typedef Thread<Scheduler> Resource;
 
 public:
 
@@ -45,9 +45,9 @@ public:
 
     /**
      * @copydoc eoos::api::Scheduler::createThread(api::Task&)
-     */     
+     */
     virtual api::Thread* createThread(api::Task& task);
-    
+
     /**
      * @copydoc eoos::api::Scheduler::sleep(int32_t)
      */
@@ -75,7 +75,7 @@ public:
 
 protected:
 
-    using Parent::setConstructed;    
+    using Parent::setConstructed;
 
 private:
 
@@ -88,14 +88,14 @@ private:
 
     /**
      * @brief Sets child thread's CPU affinity mask to primary thread CPU.
-     * 
+     *
      * @return True if the affinity mask is set.
      */
     bool_t setThreadAffinity();
 
     /**
      * @brief Sets thread policy to the round-robin real-time scheduling.
-     * 
+     *
      * @return True if the policy is set.
      */
     bool_t setThreadPolicy();
@@ -106,7 +106,7 @@ private:
      * @param s A time to sleep in seconds.
      */
     static void sSleep(int32_t const s);
-    
+
     /**
      * @brief Causes current thread to sleep in milliseconds.
      *
@@ -127,7 +127,7 @@ private:
      * @brief Initializes the allocator.
      */
     void deinitialize();
-    
+
     /**
      * @struct ResourcePool
      * @brief Resource memory pool.
@@ -136,25 +136,25 @@ private:
     {
 
     public:
-        
+
         /**
          * @brief Constructor.
          */
         ResourcePool();
 
     private:
-            
+
         /**
          * @brief Mutex resource.
-         */    
+         */
         Mutex<NoAllocator> mutex_;
-        
+
     public:
-        
+
         /**
          * @brief Resource memory allocator.
-         */     
-        lib::ResourceMemory<Resource, EOOS_GLOBAL_SYS_NUMBER_OF_THREADS> memory;
+         */
+        lib::MemoryPool<Resource,EOOS_GLOBAL_SYS_THREAD_AMOUNT> memory;
 
     };
 

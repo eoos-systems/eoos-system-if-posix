@@ -5,6 +5,7 @@
  */
 #include "sys.SemaphoreManager.hpp"
 #include "lib.UniquePointer.hpp"
+#include "lib.Assert.hpp"
 
 namespace eoos
 {
@@ -45,7 +46,7 @@ api::Semaphore* SemaphoreManager::create(int32_t permits)
             }
         }
         ptr = res.release();
-    }    
+    }
     return ptr;
 }
 
@@ -71,6 +72,7 @@ void* SemaphoreManager::allocate(size_t size)
     if( resource_ != NULLPTR )
     {
         addr = resource_->allocate(size, NULLPTR);
+        EOOS_ASSERT( addr != NULLPTR );
     }
     return addr;
 }

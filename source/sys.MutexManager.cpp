@@ -1,10 +1,11 @@
 /**
  * @file      sys.MutexManager.cpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2023, Sergey Baigudin, Baigudin Software
+ * @copyright 2023-2026, Sergey Baigudin, Baigudin Software
  */
 #include "sys.MutexManager.hpp"
 #include "lib.UniquePointer.hpp"
+#include "lib.Assert.hpp"
 
 namespace eoos
 {
@@ -13,7 +14,7 @@ namespace sys
 
 api::Heap* MutexManager::resource_( NULLPTR );
 
-MutexManager::MutexManager() 
+MutexManager::MutexManager()
     : NonCopyable<NoAllocator>()
     , api::MutexManager()
     , pool_() {
@@ -36,7 +37,8 @@ api::Mutex* MutexManager::create()
     api::Mutex* ptr( NULLPTR );
     if( isConstructed() )
     {
-        lib::UniquePointer<api::Mutex> res( new Resource() );
+        api::Mutex* resource( new Resource() );
+        lib::UniquePointer<api::Mutex> res( resource );
         if( !res.isNull() )
         {
             if( !res->isConstructed() )
@@ -45,7 +47,7 @@ api::Mutex* MutexManager::create()
             }
         }
         ptr = res.release();
-    }    
+    }
     return ptr;
 }
 
@@ -71,6 +73,7 @@ void* MutexManager::allocate(size_t size)
     if( resource_ != NULLPTR )
     {
         addr = resource_->allocate(size, NULLPTR);
+        EOOS_ASSERT( addr != NULLPTR );
     }
     return addr;
 }

@@ -5,6 +5,7 @@
  */
 #include "sys.Scheduler.hpp"
 #include "lib.UniquePointer.hpp"
+#include "lib.Assert.hpp"
 
 namespace eoos
 {
@@ -18,7 +19,7 @@ Scheduler::Scheduler()
     , api::Scheduler()
     , pool_() {
     bool_t const isConstructed( construct() );
-    setConstructed( isConstructed );    
+    setConstructed( isConstructed );
 }
 
 Scheduler::~Scheduler()
@@ -45,7 +46,7 @@ api::Thread* Scheduler::createThread(api::Task& task)
             }
         }
         ptr = res.release();
-    }    
+    }
     return ptr;
 }
 
@@ -138,7 +139,7 @@ bool_t Scheduler::setThreadPolicy()
         ::sched_param param = { .sched_priority = priority };
         int_t pid( ::getpid() );
         int_t error( ::sched_setscheduler(pid, POLICY, &param) );
-        if( error != -1 ) 
+        if( error != -1 )
         {
             int_t const policy( ::sched_getscheduler(0) );
             if( policy == POLICY )
@@ -160,7 +161,7 @@ void Scheduler::sSleep(int32_t const s)
     {
         sec = ::sleep(sec);
     }
-}    
+}
 
 bool_t Scheduler::msSleep(int32_t const ms)
 {
@@ -183,6 +184,7 @@ void* Scheduler::allocate(size_t size)
     if( resource_ != NULLPTR )
     {
         addr = resource_->allocate(size, NULLPTR);
+        EOOS_ASSERT( addr != NULLPTR );
     }
     return addr;
 }

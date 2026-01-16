@@ -16,5 +16,10 @@ api::System& Call::get()
     return System::getSystem();
 }
 
+int32_t Call::run(api::Task& task)
+{
+    return System::run(task);
+}
+
 } // namespace sys
 } // namespace eoos

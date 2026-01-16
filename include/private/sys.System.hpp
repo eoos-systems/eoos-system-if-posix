@@ -1,7 +1,7 @@
 /**
  * @file      sys.System.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2023, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2026, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_SYSTEM_HPP_
 #define SYS_SYSTEM_HPP_
@@ -13,13 +13,12 @@
 #include "sys.MutexManager.hpp"
 #include "sys.SemaphoreManager.hpp"
 #include "sys.StreamManager.hpp"
-#include "sys.Error.hpp"
 
 namespace eoos
 {
 namespace sys
 {
-    
+
 /**
  * @class System
  * @brief The operating system.
@@ -29,16 +28,6 @@ class System : public NonCopyable<NoAllocator>, public api::System
     typedef NonCopyable<NoAllocator> Parent;
 
 public:
-
-    /**
-     * @brief Constructor.
-     */
-    System();
-
-    /**
-     * @brief Destructor.
-     */
-    virtual ~System();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
@@ -64,20 +53,19 @@ public:
      * @copydoc eoos::api::System::getSemaphoreManager()
      */
     virtual api::SemaphoreManager& getSemaphoreManager();
-    
+
     /**
      * @copydoc eoos::api::System::getStreamManager()
      */
     virtual api::StreamManager& getStreamManager();
 
     /**
-     * @brief Executes the operating system.
+     * @brief Runs the EOOS system.
      *
-     * @param argc The number of arguments passed to the program.
-     * @param argv An array of c-string of arguments where the last one - argc + 1 is null.
-     * @return Zero, or error code if the execution has been terminated.
+     * @param task The first task run by the system.
+     * @return error code or zero.
      */
-    int32_t execute(int32_t argc, char_t* argv[]) const;
+    static int32_t run(api::Task& task);
 
     /**
      * @brief Returns an only one created instance of the EOOS system.
@@ -87,6 +75,16 @@ public:
     static System& getSystem();
 
 private:
+
+    /**
+     * @brief Constructor.
+     */
+    System();
+
+    /**
+     * @brief Destructor.
+     */
+    virtual ~System();
 
     /**
      * @brief Constructs this object.
@@ -104,7 +102,7 @@ private:
      * @brief The system heap.
      */
     Heap heap_;
- 
+
     /**
      * @brief The operating system scheduler.
      */
@@ -119,7 +117,7 @@ private:
      * @brief The semaphore sub-system manager.
      */
     SemaphoreManager semaphoreManager_;
-    
+
     /**
      * @brief The stream sub-system manager.
      */
